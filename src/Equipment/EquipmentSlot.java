@@ -1,10 +1,15 @@
+package Equipment;
+
+import Equipment.Item;
+
 public class EquipmentSlot
 {
-    private String name;
+
     private Item equippedItem;
 
-    public EquipmentSlot(String name) {
-        this.name = name;
+    public EquipmentSlot()
+    {
+        super();
     }
 
     public void equipItem(Item item) {

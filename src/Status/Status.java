@@ -1,3 +1,5 @@
+package Status;
+
 public class Status
 {
     private String name;
@@ -22,6 +24,11 @@ public class Status
     }
 
     public int getDuration()
+    {
+        return initialDuration;
+    }
+
+    public int getDurationNow()
     {
         return duration;
     }

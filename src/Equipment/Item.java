@@ -1,3 +1,5 @@
+package Equipment;
+
 public class Item
 {
     private String name;
@@ -5,18 +7,19 @@ public class Item
     private int defenseModifier;
     private int healthModifier;
     private int luckModifier;
-    private int evasionModifier;
+
     private int minDamage;
     private int maxDamage;
-    public Item(String name, int attackModifier, int minDamage,int maxDamage,int defenseModifier, int healthModifier, int luckModifier, int evasionModifier) {
+    private String partOfTheEquipment;
+    public Item(String name, int attackModifier, int minDamage,int maxDamage,int defenseModifier, int healthModifier, int luckModifier, String partOfTheEquipment) {
         this.name = name;
         this.attackModifier = attackModifier;
         this.defenseModifier = defenseModifier;
         this.healthModifier = healthModifier;
         this.luckModifier = luckModifier;
-        this.evasionModifier = evasionModifier;
         this.minDamage = minDamage;
         this.maxDamage = maxDamage;
+        this.partOfTheEquipment = partOfTheEquipment;
     }
 
     public int getAttackModifier() {
@@ -35,10 +38,6 @@ public class Item
         return luckModifier;
     }
 
-    public int getEvasionModifier() {
-        return evasionModifier;
-    }
-
     public int getMinDamageModifier()
     {
         return minDamage;
@@ -48,4 +47,6 @@ public class Item
     {
         return maxDamage;
     }
+
+    public String  getPartOfTheEquipment(){return partOfTheEquipment;}
 }

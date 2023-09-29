@@ -1,3 +1,8 @@
+package Creature;
+
+import Equipment.*;
+import Status.*;
+
 import java.util.*;
 
 public abstract class Creature
@@ -11,12 +16,10 @@ public abstract class Creature
     int minDamage;
     int maxDamage;
     int speed;
-
-    private List<Status> activeStatuses;
-
+    Boolean canEquipItem = true;
+    private List<Status> activeStatuses = new ArrayList<>();;
     int luck=0;
-    int evasion=0;
-    public Creature(String name, int attack, int defense, int health, int minDamage, int maxDamage)
+    public Creature(String name, int attack, int defense, int health, int minDamage, int maxDamage,int speed)
     {
         this.name = name;
         this.attack = attack;
@@ -26,13 +29,14 @@ public abstract class Creature
         this.maxDamage = maxDamage;
 
         // Инициализация слотов для снаряжения
-        equipmentSlots.put("head", new EquipmentSlot("head"));
-        equipmentSlots.put("leftHand", new EquipmentSlot("leftHand"));
-        equipmentSlots.put("rightHand", new EquipmentSlot("rightHand"));
-        equipmentSlots.put("body", new EquipmentSlot("body"));
-        equipmentSlots.put("legs", new EquipmentSlot("legs"));
+        equipmentSlots.put("Head", new EquipmentSlot());
+        equipmentSlots.put("leftHand", new EquipmentSlot());
+        equipmentSlots.put("rightHand", new EquipmentSlot());
+        equipmentSlots.put("Body", new EquipmentSlot());
+        equipmentSlots.put("Legs", new EquipmentSlot());
 
         activeStatuses=new ArrayList<>();
+        this.speed = speed;
     }
 
     public void takeDamage(int damage)
@@ -48,27 +52,29 @@ public abstract class Creature
         Random random = new Random();
         for (int i = 0; i < countDice; i++) {
             int roll = random.nextInt(6) + 1;
-            // Применяем удачу на основе псевдорандома
+            // Применяем удачу
             if (random.nextDouble() < (double) luck / 6) {
                 roll = 6; // Удачный бросок (максимальное значение на кубике)
             }
 
-            if (roll >= 5) {
+            if (roll >= 5)
+            {
                 List<Status> equippedStatuses = getEquippedItemStatuses();
                 for(Status status : equippedStatuses)
                 {
                     if(Math.random()<=status.getChance())
                     {
-                        status.resetDuration();
-                        activeStatuses.add(status);
+                        applyStatus(status,target);
                     }
                 }
-                applyStatusEffects();
                 int damage = random.nextInt(maxDamage - minDamage + 1) + minDamage;
                 totalDamage += damage;
                 target.takeDamage(totalDamage);
+                System.out.println(name + " нанес " + target.getName() + " урон равный " + totalDamage);
                 break;
-            } else {
+            }
+            else
+            {
                 System.out.println(name + " промахнулся");
             }
         }
@@ -77,11 +83,27 @@ public abstract class Creature
         EquipmentSlot slot = equipmentSlots.get(slotName);
         if (slot != null) {
             Item existingItem = slot.getEquippedItem();
-            if (existingItem != null) {
-                removeItemEffects(existingItem);
+            if (existingItem != null)
+            {
+                if(!slotName.contains(item.getPartOfTheEquipment()))
+                {
+                    System.out.println("Нелья надеть снаряжение на неправильное место");
+                    canEquipItem =false;
+                }
+                else
+                {
+                    canEquipItem = true;
+                }
+                if(canEquipItem)
+                {
+                    removeItemEffects(existingItem);
+                }
             }
-            slot.equipItem(item);
-            applyItemEffects(item);
+            if(canEquipItem)
+            {
+                slot.equipItem(item);
+                applyItemEffects(item);
+            }
         }
     }
 
@@ -103,7 +125,7 @@ public abstract class Creature
         maxDamage += item.getMaxDamageModifier();
         health += item.getHealthModifier();
         luck += item.getLuckModifier();
-        evasion += item.getEvasionModifier();
+
     }
 
     private void removeItemEffects(Item item) {
@@ -113,7 +135,6 @@ public abstract class Creature
         maxDamage -= item.getMaxDamageModifier();
         health -= item.getHealthModifier();
         luck -= item.getLuckModifier();
-        evasion -= item.getEvasionModifier();
     }
 
     public int getHealth()
@@ -129,20 +150,19 @@ public abstract class Creature
         return health > 0;
     }
 
-    public void printInfo() {
+    public void printInfo()
+    {
         System.out.println("Имя: " + name);
+        System.out.println("Здоровье: " + health);
         System.out.println("Атака: " + attack);
         System.out.println("Защита: " + defense);
-        System.out.println("Здоровье: " + health);
-        System.out.println("Минимальный урон: " + minDamage);
-        System.out.println("Максимальный урон: " + maxDamage);
-        System.out.println("Удача: " + luck);
-        System.out.println("Уворот: " + evasion);
         System.out.println("Наложенные статусы: ");
-        for(Status status : activeStatuses)
+        if (!activeStatuses.isEmpty())
         {
-            System.out.println(status.getName());
-            System.out.println("Действие статуса: " + status.getDuration());
+            for (Status status : activeStatuses) {
+                System.out.println(status.getName());
+                System.out.println("Действие статуса: " + status.getDurationNow());
+            }
         }
         System.out.println();
     }
@@ -158,7 +178,7 @@ public abstract class Creature
 
             int damage = status.getDamagePerTurn();
             takeDamage(damage);
-
+            System.out.println("Статус: " + status.getName() + " нанес урон " + damage + " " + name);
         }
 
         updateStatuses();
@@ -181,20 +201,83 @@ public abstract class Creature
 
     public void updateStatuses() {
         List<Status> statusesToRemove = new ArrayList<>();
-
-        for (Status status : activeStatuses) {
-            if (status.getDuration() > 0) {
+        for (Status status : activeStatuses)
+        {
+            if (status.getDurationNow() > 0)
+            {
                 status.reduceDuration(); // Уменьшаем длительность статуса на 1 ход
 
-                if (status.getDuration() == 0) {
+                if (status.getDurationNow() <= 0)
+                {
                     statusesToRemove.add(status); // Добавляем статус для удаления
                 }
             }
+            else
+            {
+                statusesToRemove.add(status);
+            }
         }
 
-
-
+        for (Status status :statusesToRemove)
+        {
+            status.resetDuration();
+        }
         // Удаляем статусы, у которых длительность стала равной 0
         activeStatuses.removeAll(statusesToRemove);
+    }
+
+    public Map<String, Integer> getEquippedArmorResistances() {
+        Map<String, Integer> equippedResistances = new HashMap<>();
+
+        for (EquipmentSlot slot : equipmentSlots.values()) {
+            Item equippedItem = slot.getEquippedItem();
+
+            if (equippedItem instanceof Armor) {
+                Armor armor = (Armor) equippedItem;
+
+                // Получаем сопротивления от брони и добавляем их к общему списку
+                Map<String, Integer> resistances = armor.getResistancesMap();
+                equippedResistances.putAll(resistances);
+            }
+        }
+        return equippedResistances;
+    }
+
+    public void applyStatus(Status status, Creature target)
+    {
+        // Получаем сопротивления от снаряжения
+        Map<String, Integer> equippedArmorResistances = target.getEquippedArmorResistances();
+
+        // Проверяем, есть ли сопротивление для данного статуса
+        if (equippedArmorResistances.containsKey(status.getName())) {
+            int resistance = equippedArmorResistances.get(status.getName());
+
+            // Генерируем случайное число от 0 до 100
+            int randomChance = new Random().nextInt(101);
+
+            if (randomChance > resistance)
+            {
+                Status newStatus = new Status(status.getName(),status.getDuration(),status.getDamagePerTurn(),status.getChance());
+                // Цель подвержена статусу
+                target.addStatus(newStatus);
+            } else {
+                // Цель сопротивляется статусу
+                System.out.println(target.getName() + " устойчив к статусу " + status.getName());
+            }
+        } else {
+            Status newStatus = new Status(status.getName(),status.getDuration(),status.getDamagePerTurn(),status.getChance());
+            // Если нет сопротивления, цель всегда подвержена статусу
+            target.addStatus(newStatus);
+        }
+    }
+
+    public void addStatus(Status status)
+    {
+        activeStatuses.add(status);
+    }
+
+    public String getName()
+    {
+        return name;
     }
 }
