@@ -14,8 +14,8 @@ public class Main {
     public static void main(String[] args)
     {
         Player player = new Player("Gr1k", 2, 25, 435, 2, 9, 3,34);
-        Demon monster = new Demon("Саргассо", 9, 30, 395, 3, 9,56);
-        Monster devil = new Monster("Viktor",12,34,425,4,16,4,0.22);
+        Demon monster = new Demon("Саргассо", 9, 30, 125, 3, 9,56);
+        Monster devil = new Monster("Viktor",12,34,135,4,16,4,0.22);
 
         Weapon sword = new Weapon("Меч", 10, 5, 5, 10, 0, 5, "Hand"); // Пример оружия
         Armor helmet = new Armor("Шлем", 0, 0, 0, 5, 10, 0, "Head"); // Пример брони
@@ -29,8 +29,8 @@ public class Main {
         sword.addStatus(bleed);
         bigSword.addStatus(bleed);
 
-        bestHelmet.addResistance("Отравление", 20);
-        bestHelmet.addResistance("Кровотечение", 53);
+        bestHelmet.addResistance("Отравление", 60);
+        bestHelmet.addResistance("Кровотечение", 83);
 
 
 
@@ -39,6 +39,7 @@ public class Main {
         devil.equipItem(sword,"rightHand");
         devil.equipItem(helmet,"Head");
         player.equipItem(bigSword,"rightHand");
+        player.equipItem(bestHelmet,"Head");
 
         List<Creature> enemiesList = new ArrayList<>();
         enemiesList.add(devil);

@@ -62,6 +62,8 @@ public class GameController
             {
                 if (continueGame())
                 {
+                    creatures.clear();
+                    creatures.add(player);
                     addRandomEnemyToCreatures();
                 }
                 else
@@ -121,21 +123,29 @@ public class GameController
         System.out.println("1. Атаковать");
         System.out.println("2. Восстановить здоровье");
         System.out.println("Количество возможностей восстановить здоровье: " + player.getHealCount());
-        int choice = scanner.nextInt();
-
-        if (choice == 1)
+        try
         {
-            player.attack(enemy);
+            int choice = scanner.nextInt();
+            if (choice == 1)
+            {
+                player.attack(enemy);
+            }
+            else if (choice == 2)
+            {
+                player.heal();
+            }
+            else
+            {
+                System.out.println("Некорректный выбор действия. Вы теряете ход.");
+            }
+            turn++;
         }
-        else if (choice == 2)
-        {
-            player.heal();
-        }
-        else
+        catch(Exception ex)
         {
             System.out.println("Некорректный выбор действия. Вы теряете ход.");
+            turn++;
+            scanner.next(); // Очищаем буфер ввода
         }
-        turn++;
     }
 
     private void enemyTurn(Creature enemy, Creature player)
