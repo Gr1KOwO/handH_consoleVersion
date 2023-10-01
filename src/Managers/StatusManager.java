@@ -58,7 +58,6 @@ public class StatusManager
                 if (existingStatus.getName().equals(status.getName())) {
                     existingStatus.resetDuration(); // Сбрасываем длительность статуса
                     statusExists = true;
-                    System.out.println("На " + target.getName() + " статус уже имеется" + status.getName());
                     break;
                 }
             }

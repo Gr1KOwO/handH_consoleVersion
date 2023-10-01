@@ -1,7 +1,6 @@
 package Controller;
 
-import Creature.Creature;
-import Creature.Player;
+import Creature.*;
 
 import java.util.*;
 
@@ -15,6 +14,9 @@ public class GameController
     private Scanner scanner;
     private Random random;
     private boolean gameOver;
+    Creature targetCreature;
+
+    int turn=1;
 
     public GameController(Player player, List<Creature> enemies)
     {
@@ -27,33 +29,48 @@ public class GameController
     }
 
     // Метод для выполнения следующего хода
-    public void performNextTurn() {
+    public void performNextTurn()
+    {
+        System.out.println("Текущий ход: " + turn);
         Creature currentTurnCreature = creatures.get(currentTurnIndex);
 
         if (currentTurnCreature instanceof Player)
         {
-            playerTurn(player, enemies.get(0)); // Пока ходит игрок против первого врага
+            playerTurn(player, targetCreature);
         }
         else
         {
-            enemyTurn(enemies.get(0), player); // Пока ходит первый враг против игрока
+            // Атака врага направлена к игроку
+            enemyTurn(currentTurnCreature, player);
         }
 
         // Проверка на победу или поражение
-        if (checkWinCondition()) {
-            // Враг повержен, удаление его из списка
-            enemies.remove(0);
+        if (checkWinCondition())
+        {
+
+            enemies.remove(targetCreature); // Удаление врага из списка enemies
             System.out.println("Вы победили монстра!");
 
-            // Проверяем, остались ли ещё враги
-            if (enemies.isEmpty()) {
+            // Проверяем, остались ли ещё враги и добавляем нового случайного врага
+            if (enemies.isEmpty())
+            {
                 // Все монстры повержены, завершаем игру
                 System.out.println("Вы победили всех монстров! Игра окончена.");
                 gameOver = true;
             }
+            else
+            {
+                if (continueGame())
+                {
+                    addRandomEnemyToCreatures();
+                }
+                else
+                {
+                    gameOver = true;
+                }
+            }
         }
-        else if
-        (checkLoseCondition())
+        else if (checkLoseCondition())
         {
             // Игрок проиграл, завершаем игру
             System.out.println("Вы проиграли! Игра окончена.");
@@ -69,7 +86,7 @@ public class GameController
     // Методы для проверки условий победы и поражения
     private boolean checkWinCondition() {
 
-        return enemies.isEmpty();
+        return !targetCreature.isAlive();
     }
 
     private boolean checkLoseCondition() {
@@ -83,20 +100,27 @@ public class GameController
 
         // Добавляем игрока и врагов в список существ
         creatures.add(player);
-        creatures.addAll(enemies);
-        creatures.sort(Comparator.comparingInt(Creature::getSpeed).reversed());
+        addRandomEnemyToCreatures();
         while (!gameOver)
         {
-            // Выполняем следующий ход
+
             performNextTurn();
         }
     }
 
-    private void playerTurn(Player player, Creature enemy) {
+    private void playerTurn(Player player, Creature enemy)
+    {
+        player.getStatusManager().applyStatusEffects();
+        System.out.println("Текущее состояние: ");
+        player.printInfo();
+        System.out.println();
+        System.out.println("Текущее врага: ");
+        enemy.printInfo();
+        System.out.println();
         System.out.println("Выберите действие:");
         System.out.println("1. Атаковать");
         System.out.println("2. Восстановить здоровье");
-
+        System.out.println("Количество возможностей восстановить здоровье: " + player.getHealCount());
         int choice = scanner.nextInt();
 
         if (choice == 1)
@@ -111,17 +135,43 @@ public class GameController
         {
             System.out.println("Некорректный выбор действия. Вы теряете ход.");
         }
+        turn++;
     }
 
     private void enemyTurn(Creature enemy, Creature player)
     {
-        // Реализовать логику хода врага здесь
-        enemy.attack(player);
+        enemy.getStatusManager().applyStatusEffects();
+        if(enemy instanceof Demon)
+        {
+            enemy.attack(player);
+        }
+        if(enemy instanceof Monster enemyMonster)
+        {
+            if(enemyMonster.getHealth()<enemyMonster.getMaxHealth()*0.35)
+            {
+                enemyMonster.desiccation(player);
+            }
+            enemyMonster.attack(player);
+        }
+
+        turn++;
     }
 
-    private boolean continueGame() {
+    private boolean continueGame()
+    {
         System.out.println("Желаете продолжить игру? (да/нет)");
         String choice = scanner.next().toLowerCase();
         return choice.equals("да");
+    }
+
+    private void addRandomEnemyToCreatures()
+    {
+        if (!enemies.isEmpty()) {
+            int randomIndex = random.nextInt(enemies.size());
+            Creature randomEnemy = enemies.remove(randomIndex);
+            targetCreature = randomEnemy;
+            creatures.add(randomEnemy);
+            creatures.sort(Comparator.comparingInt(Creature::getSpeed).reversed());
+        }
     }
 }
