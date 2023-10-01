@@ -1,6 +1,6 @@
 package Equipment;
 
-import Equipment.Item;
+
 
 public class EquipmentSlot
 {

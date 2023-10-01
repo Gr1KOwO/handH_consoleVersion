@@ -20,7 +20,7 @@ public class Monster extends Creature{
 
         // Восстановление здоровья монстра на основе урона
         int healAmount = (int) (totalDamage * healPercentage);
-        setHealth(getHealth() + healAmount);
+        setHealth(healAmount);
         System.out.println(name + " восстановил " + healAmount + " здоровья.");
     }
 

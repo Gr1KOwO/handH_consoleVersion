@@ -1,13 +1,16 @@
-import Creature.*;
-import Equipment.*;
-import Status.*;
+import Creature.Demon;
+import Creature.Monster;
+import Creature.Player;
+import Equipment.Armor;
+import Equipment.Weapon;
+import Status.Status;
 
 public class Main {
     public static void main(String[] args)
     {
-        Player player = new Player("Gr1k", 2, 25, 235, 2, 9, 3,34);
-        Demon monster = new Demon("Саргассо", 9, 30, 95, 3, 9,56);
-        Monster devil = new Monster("Viktor",12,34,125,4,16,4,0.2);
+        Player player = new Player("Gr1k", 2, 25, 435, 2, 9, 3,34);
+        Demon monster = new Demon("Саргассо", 9, 30, 395, 3, 9,56);
+        Monster devil = new Monster("Viktor",12,34,425,4,16,4,0.32);
 
         Weapon sword = new Weapon("Меч", 10, 5, 5, 10, 0, 5, "Hand"); // Пример оружия
         Armor helmet = new Armor("Шлем", 0, 0, 0, 5, 10, 0, "Head"); // Пример брони
@@ -21,8 +24,8 @@ public class Main {
         sword.addStatus(bleed);
         bigSword.addStatus(bleed);
 
-        bestHelmet.addResistance("Отравление", 50);
-
+        bestHelmet.addResistance("Отравление", 20);
+        bestHelmet.addResistance("Кровотечение", 23);
 
         monster.equipItem(sword, "leftHand");
         player.equipItem(sword,"leftHand");
@@ -34,14 +37,38 @@ public class Main {
         monster.printInfo();
         devil.printInfo();
 
+
+        System.out.println("Информация о статусах наложения у существ: ");
+        player.getStatusManager().printEquippedItemStatuses();
+        monster.getStatusManager().printEquippedItemStatuses();
+        devil.getStatusManager().printEquippedItemStatuses();
+
         System.out.println("Бой начался!");
         int turn = 1;
         while (true) {
+            monster.getStatusManager().applyStatusEffects();
+            player.getStatusManager().applyStatusEffects();
+            devil.getStatusManager().applyStatusEffects();
+
             System.out.println("Ход: " + turn);
-            player.attack(monster);
-            player.attack(devil);
-            monster.attack(player);
-            devil.attack(player);
+            if(monster.isAlive())
+            {
+                player.attack(monster);
+            }
+
+            if(devil.isAlive())
+            {
+                player.attack(devil);
+            }
+
+            if(player.isAlive())
+            {
+                if(monster.isAlive()){monster.attack(player);}
+                if(devil.isAlive()){devil.attack(player);}
+            }
+           
+            
+            
             if (!monster.isAlive() && !devil.isAlive())
             {
                 System.out.println("Игрок победил!");
@@ -64,10 +91,9 @@ public class Main {
                 System.out.println("Монстры победили!");
                 break;
             }
-
-            monster.applyStatusEffects();
-            player.applyStatusEffects();
-            devil.applyStatusEffects();
+            monster.getStatusManager().applyStatusEffects();
+            player.getStatusManager().applyStatusEffects();
+            devil.getStatusManager().applyStatusEffects();
 
 
             System.out.println("Информация о существах:");
@@ -75,6 +101,7 @@ public class Main {
             monster.printInfo();
             devil.printInfo();
             turn++;
+
         }
 
         System.out.println("Бой завершился за " + turn + " ходов");
