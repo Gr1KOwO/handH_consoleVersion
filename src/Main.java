@@ -91,8 +91,8 @@ public class Main {
         int speed = random.nextInt(34) + 20;
 
         Player player = new Player(name,attack,defense,health,minDamage,maxDamage,luck,speed);
-        Demon monster = new Demon("Саргассо", 9, 30, 125, 3, 9,56);
-        Monster devil = new Monster("Viktor",12,24,135,4,16,34,0.22);
+        Demon monster = new Demon("Саргассо", 9, 30, 345, 3, 9,56);
+        Monster devil = new Monster("Viktor",12,24,345,4,16,34,0.22);
 
         Weapon sword = new Weapon("Меч", 10, 5, 5, 10, 4, 1, "Hand"); // Пример оружия
         Armor helmet = new Armor("Шлем", 0, 0, 0, 5, 10, 0, "Head"); // Пример брони

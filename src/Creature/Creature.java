@@ -48,7 +48,11 @@ public abstract class Creature
         attackModifier = Math.max(1, attackModifier);
         int countDice = attackModifier;
         int totalDamage=0;
+        System.out.println("Количество кубиков существа " + this.name + " : "+ countDice);
         Random random = new Random();
+
+        boolean successfulRoll = false;
+
         for (int i = 0; i < countDice; i++) {
             int roll = random.nextInt(6) + 1;
             // Применяем удачу
@@ -58,6 +62,7 @@ public abstract class Creature
 
             if (roll >= 5)
             {
+                successfulRoll = true;
                 List<Status> equippedStatuses = statusManager.getEquippedItemStatuses();
                 for(Status status : equippedStatuses)
                 {
@@ -73,10 +78,10 @@ public abstract class Creature
                 System.out.println(name + " нанес " + target.getName() + " урон равный " + totalDamage);
                 break;
             }
-            else
-            {
-                System.out.println(name + " промахнулся");
-            }
+        }
+        if (!successfulRoll)
+        {
+            System.out.println(name + " промахнулся");
         }
     }
     public void equipItem(Item item, String slotName)
