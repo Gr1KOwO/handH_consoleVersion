@@ -174,9 +174,9 @@ public class GameController
 
     private boolean continueGame()
     {
-        System.out.println("Желаете продолжить игру? (да/нет)");
+        System.out.println("Желаете продолжить игру? (yes/no)");
         String choice = scanner.next().toLowerCase();
-        return choice.equals("да");
+        return choice.equals("yes");
     }
 
     private void addRandomEnemyToCreatures()
