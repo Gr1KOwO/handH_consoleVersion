@@ -86,6 +86,7 @@ public class StatusManager
      *
      * @return Список активных статусов.
      */
+
     public List<Status> getActiveStatus()
     {
         return activeStatuses;
