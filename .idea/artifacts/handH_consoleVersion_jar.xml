@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="handH_consoleVersion:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/handH_consoleVersion_jar</output-path>
+    <root id="archive" name="handH_consoleVersion.jar">
+      <element id="module-output" name="handH_consoleVersion" />
+    </root>
+  </artifact>
+</component>
