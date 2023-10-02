@@ -66,14 +66,13 @@ public class StatusManager
         if (setStatus) {
             // Проверяем, есть ли уже такой статус
             boolean statusExists = false;
-            for (Status existingStatus : activeStatuses) {
+            for (Status existingStatus : target.getStatusManager().getActiveStatus()) {
                 if (existingStatus.getName().equals(status.getName())) {
                     existingStatus.resetDuration(); // Сбрасываем длительность статуса
                     statusExists = true;
                     break;
                 }
             }
-
             if (!statusExists) {
                 // Если статус не существует, то добавляем его
                 System.out.println("На " + target.getName() + " наложился статус " + status.getName());
