@@ -22,6 +22,17 @@ public abstract class Creature
     EquipmentManager equipmentManager;
     StatusManager statusManager;
 
+    /**
+     * Конструктор класса Creature.
+     *
+     * @param name       Имя существа.
+     * @param attack     Базовая атака существа.
+     * @param defense    Базовая защита существа.
+     * @param health     Здоровье существа.
+     * @param minDamage  Минимальный урон при атаке.
+     * @param maxDamage  Максимальный урон при атаке.
+     * @param speed      Скорость существа.
+     */
     public Creature(String name, int attack, int defense, int health, int minDamage, int maxDamage,int speed)
     {
         this.name = name;
@@ -37,11 +48,21 @@ public abstract class Creature
         statusManager = new StatusManager(this);
     }
 
+    /**
+     * Метод, который вызывается, когда существо получает урон.
+     *
+     * @param damage Переданный урон.
+     */
     public void takeDamage(int damage)
     {
         health-=damage;
     }
-    
+
+    /**
+     * Метод, выполняющий атаку другого существа.
+     *
+     * @param target Цель атаки.
+     */
     public void attack(Creature target)
     {
         int attackModifier = attack - target.getDefense() +1;
@@ -84,21 +105,49 @@ public abstract class Creature
             System.out.println(name + " промахнулся");
         }
     }
+
+    /**
+     * Метод для экипировки предмета существом в указанный слот.
+     *
+     * @param item     Предмет для экипировки.
+     * @param slotName Название слота, в который будет экипирован предмет.
+     */
     public void equipItem(Item item, String slotName)
     {
         equipmentManager.equipItem(item, slotName);
     }
+
+    /**
+     * Метод для получения текущего здоровья существа.
+     *
+     * @return Текущее здоровье существа.
+     */
     public int getHealth()
     {
         return health;
     }
+
+    /**
+     * Метод для получения защиты существа.
+     *
+     * @return Защита существа.
+     */
     public int getDefense() {
         return defense;
     }
+    /**
+     * Метод, определяющий, живо ли существо.
+     *
+     * @return true, если существо живо, иначе false.
+     */
     public boolean isAlive()
     {
         return health > 0;
     }
+
+    /**
+     * Метод для вывода информации о существе.
+     */
     public void printInfo()
     {
         System.out.println("Имя: " + name);
@@ -115,7 +164,11 @@ public abstract class Creature
         }
         System.out.println();
     }
-
+    /**
+     * Метод для получения скорости существа.
+     *
+     * @return Скорость существа.
+     */
     public int getSpeed()
     {
         return speed;
@@ -141,6 +194,7 @@ public abstract class Creature
         health += dopHealth;
 
     }
+    // Методы для модификации характеристик существа
     public void setLuckModifier(int dopLuck)
     {
         luck += dopLuck; 
@@ -173,10 +227,21 @@ public abstract class Creature
     {
         attack -= atk;
     }
+
+    /**
+     * Получение менеджера экипировки существа.
+     *
+     * @return Менеджер экипировки существа.
+     */
     public EquipmentManager getEquipmentManager()
     {
         return equipmentManager;
     }
+    /**
+     * Получение менеджера статусов существа.
+     *
+     * @return Менеджер статусов существа.
+     */
     public StatusManager getStatusManager()
     {
         return statusManager;

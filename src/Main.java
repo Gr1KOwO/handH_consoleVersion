@@ -94,20 +94,23 @@ public class Main {
         Demon monster = new Demon("Саргассо", 9, 30, 345, 3, 9,56);
         Monster devil = new Monster("Viktor",12,24,345,4,16,34,0.22);
 
+        //Создание снаряжения
         Weapon sword = new Weapon("Меч", 10, 5, 5, 10, 4, 1, "Hand"); // Пример оружия
         Armor helmet = new Armor("Шлем", 0, 0, 0, 5, 10, 0, "Head"); // Пример брони
         Armor bestHelmet = new Armor("Улучшенный шлем",0,0,0,20,20,1,"Head");
-        Weapon bigSword = new Weapon("Меч Гатса",20,9,20,20,0,0,"Hand");
+        Weapon bigSword = new Weapon("Бастер",20,9,20,20,0,0,"Hand");
         Status poison = new Status("Отравление",2,2,0.2);
         Status bleed = new Status("Кровотечение",3,4,0.4);
 
         //Добавляем эффект отравления на меч
         sword.addStatus(poison);
+        //Добавляем кровотечения
         sword.addStatus(bleed);
         bigSword.addStatus(bleed);
 
+        //Добавляем сопротивление к эффектам
         bestHelmet.addResistance("Отравление", 60);
-        bestHelmet.addResistance("Кровотечение", 83);
+        bestHelmet.addResistance("Кровотечение", 53);
 
 
         monster.equipItem(sword, "leftHand");
@@ -119,7 +122,6 @@ public class Main {
         List<Creature> enemiesList = new ArrayList<>();
         enemiesList.add(devil);
         enemiesList.add(monster);
-
 
         GameController game = new GameController(player,enemiesList);
         game.startGame();

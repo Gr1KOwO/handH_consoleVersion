@@ -6,18 +6,23 @@ import java.util.*;
 
 public class GameController 
 {
-    private List<Creature> enemies;
-    private List<Creature> creatures;
-    private Player player;
-    private int currentTurnIndex;
+    private List<Creature> enemies;  // Список врагов в игре.
+    private List<Creature> creatures;// Список существ, учавствующих в раунде
+    private Player player;// Игрок.
+    private int currentTurnIndex;// Индекс текущего существа, которое совершает ход.
 
     private Scanner scanner;
     private Random random;
     private boolean gameOver;
     Creature targetCreature;
 
-    int turn=1;
-
+    int turn=1;// Счетчик ходов раунда
+    /**
+     * Конструктор класса GameController.
+     *
+     * @param player  Игрок.
+     * @param enemies Список врагов в игре.
+     */
     public GameController(Player player, List<Creature> enemies)
     {
         this.player = player;

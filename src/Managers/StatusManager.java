@@ -10,15 +10,22 @@ import java.util.*;
 
 public class StatusManager
 {
-    Creature creature;
+    Creature creature; // Сущность, обладающая статусами.
 
-    private List<Status> activeStatuses;
+    private List<Status> activeStatuses;// Активные статусы на существе.
+    /**
+     * Конструктор класса StatusManager.
+     *
+     * @param creature Сущность, обладающая статусами.
+     */
     public StatusManager(Creature creature)
     {
         this.creature = creature;
         activeStatuses = new ArrayList<>();
     }
-   
+    /**
+     * Метод для применения эффектов активных статусов.
+     */
     public void applyStatusEffects()
     {
         for(Status status : activeStatuses)
@@ -29,7 +36,12 @@ public class StatusManager
         }
         updateStatuses();
     }
-
+    /**
+     * Метод для применения статуса к цели.
+     *
+     * @param status Статус для применения.
+     * @param target Цель, к которой применяется статус.
+     */
     public void applyStatus(Status status, Creature target)
     {
         boolean setStatus = true;
@@ -70,17 +82,27 @@ public class StatusManager
             }
         }
     }
-
+    /**
+     * Метод для получения списка активных статусов.
+     *
+     * @return Список активных статусов.
+     */
     public List<Status> getActiveStatus()
     {
         return activeStatuses;
     }
-
+    /**
+     * Метод для добавления статуса в список активных статусов.
+     *
+     * @param status Статус для добавления.
+     */
     public void addStatus(Status status)
     {
         activeStatuses.add(status);
     }
-
+    /**
+     * Метод для обновления длительности статусов и удаления истекших статусов.
+     */
     public void updateStatuses() 
     {
         List<Status> statusesToRemove = new ArrayList<>();
@@ -108,7 +130,11 @@ public class StatusManager
         // Удаляем статусы, у которых длительность стала равной 0
         activeStatuses.removeAll(statusesToRemove);
     }
-
+    /**
+     * Метод для получения статусов, связанных с экипированным оружием.
+     *
+     * @return Список статусов, связанных с экипированным оружием.
+     */
     public List<Status> getEquippedItemStatuses()
     {
         Map<String, Double> statusChances = new HashMap<>();
@@ -145,20 +171,6 @@ public class StatusManager
             Status newStatus = new Status(statusName, status.getDuration(), status.getDamagePerTurn(), combinedChance);
             equippedItemStatuses.add(newStatus);
         }
-
         return equippedItemStatuses;
-    }
-
-    public void printEquippedItemStatuses() {
-        System.out.println("Имя Персонажа: " + creature.getName());
-        List<Status> equippedItemStatuses = getEquippedItemStatuses();
-
-        for (Status status : equippedItemStatuses) {
-            System.out.println("Имя статуса: " + status.getName());
-            System.out.println("Длительность: " + status.getDuration());
-            System.out.println("Урон в ход: " + status.getDamagePerTurn());
-            System.out.println("Шанс наложения: " + status.getChance());
-            System.out.println();
-        }
     }
 }
